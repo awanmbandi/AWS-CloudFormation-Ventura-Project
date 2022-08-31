@@ -76,6 +76,3 @@ James:
 
 # Important Links 
 PPT LINK: https://docs.google.com/presentation/d/1IHeRf2U8oH8h2oyHTqcOgSkowDaMfTkVXud9uiH3Ivk/edit?usp=sharing
-GDM Syntax Reference Docs: https://cloud.google.com/deployment-manager/docs/configuration/syntax-reference
-Supported Resource Types For Every Service and Resource: https://cloud.google.com/deployment-manager/docs/configuration/supported-resource-types
-Example Resource Type Properties: https://cloud.google.com/compute/docs/reference/rest/v1/networks
