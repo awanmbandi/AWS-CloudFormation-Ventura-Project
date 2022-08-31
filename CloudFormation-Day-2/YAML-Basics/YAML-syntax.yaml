@@ -1,5 +1,6 @@
-#YAML File Extention (Data Serialization Language)
-
+### YAML File Extention (Data Serialization Language)
+# .yaml
+# .yml
 
 #Key Value Pairs
 Name: James
@@ -70,18 +71,7 @@ James:
     Houston
     TX 77056
 
-#YAML Greater than Sign
-James:
-  Age: 25
-  Occupation: Engineer
-  State: Texas
-  gpa: 4.5
-  male: true
-  AboutEmployee: >
-    My name is James Atigoh and I'm a Google Cloud Engineer 
-    working for JJTech.
-    I'm a professional at what I do, if you ever need 
-    help with Cloud base solution don't hesitate to reach out. 
+
 
 
 # Important Links 
