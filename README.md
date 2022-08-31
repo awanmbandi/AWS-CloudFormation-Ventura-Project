@@ -9,4 +9,11 @@
 4. **Prod:** https://docs.google.com/document/d/19_o9PPnVgGbvk-Domw0IPs2UnymOgS6x96Uf7jVZt1o/edit
 5. **DR:** https://docs.google.com/document/d/1DHF3nsAwp3Yf9NoVSFKav4HT8vjy4WrcuiOanJkvFac/edit
 
+## Subneting Requirements
+1. **Sandbox:** https://docs.google.com/presentation/d/12MSpQ-V3ZlRn4VFqoyb-TQ__YJLaRV8s/edit#slide=id.p2
+2. **Dev:** https://docs.google.com/presentation/d/12MSpQ-V3ZlRn4VFqoyb-TQ__YJLaRV8s/edit#slide=id.p4
+3. **UAT:** https://docs.google.com/presentation/d/12MSpQ-V3ZlRn4VFqoyb-TQ__YJLaRV8s/edit#slide=id.p5
+4. **Prod:** https://docs.google.com/presentation/d/12MSpQ-V3ZlRn4VFqoyb-TQ__YJLaRV8s/edit#slide=id.g1497df9cf3c_0_3
+5. **DR:** https://docs.google.com/presentation/d/12MSpQ-V3ZlRn4VFqoyb-TQ__YJLaRV8s/edit#slide=id.g1497df9cf3c_0_17
+
 
