@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+  <AWSTemplateFormatVersion>2010-09-09</AWSTemplateFormatVersion>
+  <Description>This template provisions the JJTech Network Infrastructure</Description>
+  <Metadata/>
+  <Parameters/>
+  <Mappings/>
+  <Conditions/>
+  <Resources>
+    <JJTechVPC>
+      <Type>AWS::EC2::VPC</Type>
+      <Properties>
+        <CidrBlock>10.0.0.0/16</CidrBlock>
+        <Tags>
+          <Key>Name</Key>
+          <Value>JJTechVPC</Value>
+        </Tags>
+      </Properties>
+    </JJTechVPC>
+  </Resources>
+  <Outputs/>
+</root>

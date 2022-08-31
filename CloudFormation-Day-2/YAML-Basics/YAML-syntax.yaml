@@ -1,0 +1,91 @@
+#YAML File Extention (Data Serialization Language)
+
+
+#Key Value Pairs
+Name: James
+Age: 29 # This is a key-value pair with an Integer as Value
+Gpa: 4.5 # This is a key-value pair with a Floating value
+Occupation: Engineer # This is a key-value pair with Engineer as String Value without Quotes
+State: 'Texas' # This is a key-value pair with 'Texas' as String Value in single Quotes
+AboutEmployee: "I am a Cloud Engineer" # This is a key-value pair with String Value in double quotes
+Male: true # This is a key-value pair with true as a Boolean Value
+CriminalRecord: null # This is a key-value pair with  null Value (NoValue, just like CFT Pseudo Parameter)
+
+#YAML Lists with dashes and arreys 
+#List (Block Format)
+Employees:
+  - James
+  - Francis
+  - John
+#List (Sequence Format)
+Employees: [James, Francis, John]
+
+#YAML Dictionary. Dictionaries comprise a key:value format with contents indented
+James:
+  Age: 24
+  Occupation: Cloud Engineer
+  Region: Alerta
+  gpa: 4.5
+  male: true
+
+#YAML Lists containing dictionaries
+Employees:
+  - James:
+      Age: 24
+      Occupation: Cloud Engineer
+      State: Texas
+  - Francis:
+      Age: 28
+      Occupation: Architect
+      State: Quebec
+  - John:
+      Age: 40
+      Occupation: DevOps Engineer
+      State: Maryland
+
+#YAML lists containing dictionaries containing lists
+Employees:
+  - James:
+      Occupation: Cloud Engineer
+      Age: 24
+      State: Texas
+      Degrees:
+        - Bachelors #(list)Block Format
+        - Masters
+  - Francis:
+      Occupation: Architect
+      Age: 28
+      Province: Quebec
+      Degrees: [Bachelors, Masters, PHD] #Sequence Format
+
+#YAML Pipe
+James:
+  Age: 24
+  Occupation: Cloud Engineer
+  State: Texas
+  gpa: 4.5
+  male: true
+  Address: |
+    9825 97 Ave
+    Houston
+    TX 77056
+
+#YAML Greater than Sign
+James:
+  Age: 25
+  Occupation: Engineer
+  State: Texas
+  gpa: 4.5
+  male: true
+  AboutEmployee: >
+    My name is James Atigoh and I'm a Google Cloud Engineer 
+    working for JJTech.
+    I'm a professional at what I do, if you ever need 
+    help with Cloud base solution don't hesitate to reach out. 
+
+
+# Important Links 
+PPT LINK: https://docs.google.com/presentation/d/1IHeRf2U8oH8h2oyHTqcOgSkowDaMfTkVXud9uiH3Ivk/edit?usp=sharing
+GDM Syntax Reference Docs: https://cloud.google.com/deployment-manager/docs/configuration/syntax-reference
+Supported Resource Types For Every Service and Resource: https://cloud.google.com/deployment-manager/docs/configuration/supported-resource-types
+Example Resource Type Properties: https://cloud.google.com/compute/docs/reference/rest/v1/networks
