@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-        "Description": "This template provisions the JJTech Network Infrastructure",
+        "Description": "This template provisions the VenturaVPC Network Infrastructure",
         "Metadata": {
     
         },
