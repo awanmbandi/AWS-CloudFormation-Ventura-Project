@@ -14,12 +14,12 @@
     
         },
         "Resources": {
-            "JJTechVPC": {
+            "VenturaVPC": {
               "Type": "AWS::EC2::VPC",
               "Properties": {
                 "CidrBlock": "10.0.0.0/16",
                 "Tags":[
-                { "Key": "Name", "Value":  "JJTechVPC" }
+                { "Key": "Name", "Value":  "VenturaVPC" }
                 ]
               }
             }
