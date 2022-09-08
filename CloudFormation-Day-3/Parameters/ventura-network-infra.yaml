@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "This CFT deploys/provisions the Ventura Prod Network Infrastructure"
+Metadata: {}
+
+Parameters: 
+  VenturaProdVPCCidirBlock:
+    Description: Please provide your Prod VPC CidrBlock
+    Type: String
+  # NAT and Frontend ALB Parameters
+  VenturaProdNATalbSN1CidirBlock:
+    Description: Please provide Prod NAT and frontend ALB Subnet 1 CidrBlock
+    Type: String
+  VenturaProdNATalbSN1azPara:
+    Description: Please provide Prod NAT and Frontend ALB Subnet 1 Availability Zone
+    Type: AWS::EC2::AvailabilityZone::Name
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  # Ventura Prod VPC
+  VenturaProdVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VenturaProdVPCCidirBlock
+      Tags:
+        - Key: Name
+          Value: VenturaProdVPC
+  # Ventura NAT Gatway and Application LoadBalancer Subnet 1
+  VenturaProdNATalbSN1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Ref VenturaProdNATalbSN1azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdNATalbSN1CidirBlock
+      Tags:
+        - Key: Name
+          Value: VenturaProdNATalbSN1
+
+Outputs: {}
