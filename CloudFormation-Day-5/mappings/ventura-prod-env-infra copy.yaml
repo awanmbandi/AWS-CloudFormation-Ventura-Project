@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "This template provisions the Ventura Prod Network Infrastructure"
+Metadata: {}
+
+Parameters: 
+  
+
+
+
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+
+
+
+Outputs: {}

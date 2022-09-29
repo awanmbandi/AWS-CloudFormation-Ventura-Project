@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions the ventura prod web and app infrastructure
+Metadata: {}
+
+Parameters: 
+  #---------------------------------------
+  # Web Servers Parameters
+  #---------------------------------------
+  # Ventura Prod Web Server 1
+  VenturaProdWebServer1azPara:
+    Description: Please select the Availability Zone to place the VenturaProdWebServer1
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdWebServer1ImageIdPara:
+    Description: Please provide Image Id for VenturaProdWebServer1
+    Type: AWS::EC2::Image::Id
+  
+  VenturaProdWebServer1InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer1
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+  
+  VenturaProdWebServer1KeyNamePara:
+    Description: Provide a KeName for VenturaProdWebServer1
+    Type: AWS::EC2::KeyPair::KeyName
+  
+  # Ventura Prod Web Server 2
+  VenturaProdWebServer2azPara:
+    Description: Please select the Availability Zone to place the VenturaProdWebServer2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdWebServer2ImageIdPara:
+    Description: Please provide Image Id for VenturaProdWebServer2
+    Type: AWS::EC2::Image::Id
+  
+  VenturaProdWebServer2InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer2
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+  
+  VenturaProdWebServer2KeyNamePara:
+    Description: Provide a KeName for VenturaProdWebServer2
+    Type: AWS::EC2::KeyPair::KeyName
+
+  #---------------------------------
+  # App Servers Parameters
+  #---------------------------------
+  # Ventura Prod App Server 1
+  VenturaProdAppServer1azPara:
+    Description: Please select the Availability Zone to place the VenturaProdAppServer1
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdAppServer1ImageIdPara:
+    Description: Please provide Image Id for VenturaProdWebServer1
+    Type: AWS::EC2::Image::Id
+  
+  VenturaProdAppServer1InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer1
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+  
+  VenturaProdAppServer1KeyNamePara:
+    Description: Provide a KeName for VenturaProdAppServer1
+    Type: AWS::EC2::KeyPair::KeyName
+  
+  # Ventura Prod App Server 2
+  VenturaProdAppServer2azPara:
+    Description: Please select the Availability Zone to place the VenturaProdAppServer2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdAppServer2ImageIdPara:
+    Description: Please provide Image Id for VenturaProdAppServer2
+    Type: AWS::EC2::Image::Id
+  
+  VenturaProdAppServer2InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer2
+    Type: String
+    AllowedValues:
+      - "t2.micro"
+      - "t2.medium"
+      - "m1.large"
+    Default: t2.medium
+  
+  VenturaProdAppServer2KeyNamePara:
+    Description: Provide a KeName for VenturaProdAppServer2
+    Type: AWS::EC2::KeyPair::KeyName
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  #-----------------------------------------
+  # Ventura Prod Web Servers
+  #-----------------------------------------
+  VenturaProdWebServer1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: !Ref VenturaProdWebServer1azPara
+      ImageId: !Ref VenturaProdWebServer1ImageIdPara
+      InstanceType: !Ref VenturaProdWebServer1InstanceTypePara
+      KeyName: !Ref VenturaProdWebServer1KeyNamePara
+      SubnetId: !ImportValue VenturaProdWebSN1Output    # Import = 1
+      SecurityGroupIds:
+        - !ImportValue VenturaProdWebSecurityGroupOutput  # Import = 2
+      Tags:
+        - Key: Name
+          Value: VenturaProdWebServer1
+  
+  VenturaProdWebServer2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: !Ref VenturaProdWebServer2azPara
+      ImageId: !Ref VenturaProdWebServer2ImageIdPara
+      InstanceType: !Ref VenturaProdWebServer2InstanceTypePara
+      KeyName: !Ref VenturaProdWebServer2KeyNamePara
+      SubnetId: !ImportValue VenturaProdWebSN2Output    # Import = 3
+      SecurityGroupIds:
+        - !ImportValue VenturaProdWebSecurityGroupOutput  # Import = 4
+      Tags:
+        - Key: Name
+          Value: VenturaProdWebServer2
+
+  #-----------------------------------------
+  # Ventura Prod App Servers
+  #-----------------------------------------
+  VenturaProdAppServer1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: !Ref VenturaProdAppServer1azPara
+      ImageId: !Ref VenturaProdAppServer1ImageIdPara
+      InstanceType: !Ref VenturaProdAppServer1InstanceTypePara
+      KeyName: !Ref VenturaProdAppServer1KeyNamePara
+      SubnetId: !ImportValue VenturaProdAppSN1Output    # Import = 5
+      SecurityGroupIds:
+        - !ImportValue VenturaProdAppSecurityGroupOutput  # Import = 6
+      Tags:
+        - Key: Name
+          Value: VenturaProdAppServer1
+  
+  VenturaProdAppServer2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      AvailabilityZone: !Ref VenturaProdAppServer2azPara
+      ImageId: !Ref VenturaProdAppServer2ImageIdPara
+      InstanceType: !Ref VenturaProdAppServer2InstanceTypePara
+      KeyName: !Ref VenturaProdAppServer2KeyNamePara
+      SubnetId: !ImportValue VenturaProdAppSN2Output    # Import = 7
+      SecurityGroupIds:
+        - !ImportValue VenturaProdAppSecurityGroupOutput   # Import = 8
+      Tags:
+        - Key: Name
+          Value: VenturaProdAppServer2
+
+Outputs:
+  VenturaProdWebServer1Output:
+    Description: Export "VenturaProdWebServer1"
+    Value: !Ref VenturaProdWebServer1
+    Export: 
+      Name: VenturaProdWebServer1Output
+  
+  VenturaProdWebServer2Output:
+    Description: Export "VenturaProdWebServer2" VenturaProdAppServer1
+    Value: !Ref VenturaProdWebServer2
+    Export: 
+      Name: VenturaProdWebServer2Output
+
+  VenturaProdAppServer1Output:
+    Description: Export "VenturaProdAppServer1"
+    Value: !Ref VenturaProdAppServer1
+    Export: 
+      Name: VenturaProdAppServer1Output
+  
+  VenturaProdAppServer2Output:
+    Description: Export "VenturaProdAppServer2"
+    Value: !Ref VenturaProdAppServer2
+    Export: 
+      Name: VenturaProdAppServer2Output

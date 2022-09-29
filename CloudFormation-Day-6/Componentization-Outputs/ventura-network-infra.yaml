@@ -1,0 +1,471 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions the ventura network infrastructure
+Metadata: {}
+
+Parameters: 
+  VenturaProdVPCciderBlockPara:
+    Description: Please provide a CIDR block for the VenturaProVPC
+    Type: String
+  #---------------------------------------
+  # Subnet Availability Zone Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdNATalbSN2azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdWebSN1azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdWebSN2azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdAppSN1azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdAppSN2azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdDBSN1azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdDBSN21azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  #---------------------------------------
+  # Subnet CidirBlock Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN1
+    Type: String
+  
+  VenturaProdNATalbSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN2
+    Type: String
+  
+  VenturaProdWebSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN1
+    Type: String
+  
+  VenturaProdWebSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN2
+    Type: String
+  
+  VenturaProdAppSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN1
+    Type: String
+  
+  VenturaProdAppSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN2
+    Type: String
+  
+  VenturaProdDBSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN1
+    Type: String
+  
+  VenturaProdDBSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN2
+    Type: String
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  #-----------------------------------------
+  # Ventura Prod VPC 
+  #-----------------------------------------
+  VenturaProdVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VenturaProdVPCciderBlockPara
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: VenturaProdVPC
+  
+  #-----------------------------------------
+  # Ventura Prod ALB-NAT Gateway Public SNs
+  #-----------------------------------------       
+  VenturaProdNATalbSN1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdNATalbSN1azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdNATalbSN1CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-NAT-ALB-Subnet-1
+
+  VenturaProdNATalbSN2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdNATalbSN2azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdNATalbSN2CidrBlockPara
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-ALB-Subnet-2
+
+  #-----------------------------------------
+  # Ventura Prod Web Server Subnets
+  #-----------------------------------------   
+  VenturaProdWebSN1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdWebSN1azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdWebSN1CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-Web-Subnet-1
+
+  VenturaProdWebSN2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1b"
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdWebSN2CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-Web-Subnet-2
+
+  #-----------------------------------------
+  # Ventura Prod App Server Subnets
+  #-----------------------------------------  
+  VenturaProdAppSN1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdAppSN1azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdAppSN1CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-App-Subnet-1
+
+  VenturaProdAppSN2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdAppSN2azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdAppSN2CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-App-Subnet-2
+
+  #-----------------------------------------
+  # Ventura Prod DB Server Subnets
+  #-----------------------------------------  
+  VenturaProdDBSN1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdDBSN1azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdDBSN1CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-DB-Subnet-1
+
+  VenturaProdDBSN2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Ref VenturaProdDBSN21azPara
+      VpcId: !Ref VenturaProdVPC
+      CidrBlock: !Ref VenturaProdDBSN2CidrBlockPara
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-DB-Subnet-2
+
+  VenturaProdIgw:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: VenturaProdIgw
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      InternetGatewayId: !Ref VenturaProdIgw
+  
+  #-----------------------------------------
+  # Ventura Prod Subnet Route Tables
+  #-----------------------------------------  
+  VenturaProdPublicRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: VenturaProdPublicRouteTable1
+  
+  VenturaProdPublicRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: VenturaProdPublicRouteTable2
+  
+  VenturaProdWebRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-prod-Web-RouteTable1
+  
+  VenturaProdWebRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-Web-RouteTable2
+
+  VenturaProdAppRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-App-RouteTable1
+
+  VenturaProdAppRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-App-RouteTable2
+
+  VenturaProdDBRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-DB-RouteTable1
+
+  VenturaProdDBRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VenturaProdVPC
+      Tags:
+        - Key: Name
+          Value: Ventura-Prod-DB-RouteTable2
+
+  #-----------------------------------------
+  # Ventura Prod Route Table Associations
+  # Associate the relevant route tables to their respective subnets
+  #-----------------------------------------  
+  VenturaProdPublicRouteTable1Assoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdNATalbSN1
+      RouteTableId: !Ref VenturaProdPublicRouteTable1
+
+  VenturaProdPublicRouteTable2Assoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdNATalbSN2
+      RouteTableId: !Ref VenturaProdPublicRouteTable2
+  
+  VenturaProdWebSN1RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdWebSN1
+      RouteTableId: !Ref VenturaProdWebRouteTable1
+
+  VenturaProdWebSN2RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdWebSN2
+      RouteTableId: !Ref VenturaProdWebRouteTable2
+
+  VenturaProdAppSN1RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdAppSN1
+      RouteTableId: !Ref VenturaProdAppRouteTable1
+
+  VenturaProdAppSN2RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdAppSN2
+      RouteTableId: !Ref VenturaProdAppRouteTable2
+
+  VenturaProdDBSN1RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdDBSN1
+      RouteTableId: !Ref VenturaProdDBRouteTable1
+
+  VenturaProdDBSN2RouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref VenturaProdDBSN2
+      RouteTableId: !Ref VenturaProdDBRouteTable2
+
+  #-----------------------------------------
+  # Ventura Prod Nat Gateways
+  #----------------------------------------- 
+  VenturaProdNatGateway1:
+    Type: AWS::EC2::NatGateway
+    DependsOn: VenturaProdNatGateway1EIP
+    Properties:
+      AllocationId: !GetAtt VenturaProdNatGateway1EIP.AllocationId
+      SubnetId: !Ref VenturaProdNATalbSN1
+
+  VenturaProdNatGateway2:
+    Type: AWS::EC2::NatGateway
+    DependsOn: VenturaProdNatGateway2EIP
+    Properties:
+      AllocationId: !GetAtt VenturaProdNatGateway2EIP.AllocationId
+      SubnetId: !Ref VenturaProdNATalbSN2
+  
+  #-----------------------------------------
+  # Ventura Prod NAT Gatways Elastic IPs
+  #----------------------------------------- 
+  VenturaProdNatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: VenturaProdNATalbSN1
+    Properties:
+      Domain: vpc
+
+  VenturaProdNatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: VenturaProdNATalbSN2
+    Properties:
+      Domain: vpc
+  
+  #-----------------------------------------
+  # Ventura Prod IGW and NAT Gatways Routes
+  #-----------------------------------------
+  VenturaProdPublicRouteTable1PublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: !Ref VenturaProdPublicRouteTable1
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref VenturaProdIgw
+  
+  VenturaProdPublicRouteTable2PublicRoute:
+      Type: AWS::EC2::Route
+      Properties:
+        RouteTableId: !Ref VenturaProdPublicRouteTable2
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId: !Ref VenturaProdIgw
+
+  VenturaProdWebRouteTable1NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway1EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdWebRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway1
+
+  VenturaProdWebRouteTable2NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway2EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdWebRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway2
+
+  VenturaProdAppRouteTable1NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway1EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdAppRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway1
+
+  VenturaProdAppRouteTable2NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway2EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdAppRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway2
+
+  VenturaProdDBRouteTable1NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway1EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdDBRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway1
+
+  VenturaProdDBRouteTable2NATgatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VenturaProdNatGateway2EIP
+    Properties:
+      RouteTableId: !Ref VenturaProdDBRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref VenturaProdNatGateway2
+
+Outputs:
+  VenturaProdVPCOutput:
+    Description: Exporting The "VenturaProdVPC" ID
+    Value: !Ref VenturaProdVPC
+    Export: 
+      Name: VenturaProdVPCOutput
+  
+  VenturaProdNATalbSN1Output:
+    Description: Exporting The "VenturaProdNATalbSN1" ID
+    Value: !Ref VenturaProdNATalbSN1
+    Export: 
+      Name: VenturaProdNATalbSN1Output
+  
+  VenturaProdNATalbSN2Output:
+    Description: Exporting The "VenturaProdNATalbSN2" ID
+    Value: !Ref VenturaProdNATalbSN2
+    Export: 
+      Name: VenturaProdNATalbSN2Output
+  
+  VenturaProdWebSN1Output:
+    Description: Exporting the "!Ref VenturaProdWebSN1" ID
+    Value: !Ref VenturaProdWebSN1
+    Export: 
+      Name: VenturaProdWebSN1Output
+  
+  VenturaProdWebSN2Output:
+    Description: Exporting the "!Ref VenturaProdWebSN2" ID
+    Value: !Ref VenturaProdWebSN2
+    Export: 
+      Name: VenturaProdWebSN2Output
+  
+  VenturaProdAppSN1Output:
+    Description: Exporting the "!Ref VenturaProdAppSN1" ID
+    Value: !Ref VenturaProdAppSN1
+    Export: 
+      Name: VenturaProdAppSN1Output
+  
+  VenturaProdAppSN2Output:
+    Description: Exporting the "!Ref VenturaProdAppSN2" ID
+    Value: !Ref VenturaProdAppSN2
+    Export: 
+      Name: VenturaProdAppSN2Output
+
+  VenturaProdDBSN1Output:
+    Description: Exporting the "!Ref VenturaProdDBSN1" ID
+    Value: !Ref VenturaProdDBSN1
+    Export: 
+      Name: VenturaProdDBSN1Output
+  
+  VenturaProdDBSN2Output:
+    Description: Exporting the "!Ref VenturaProdDBSN2" ID
+    Value: !Ref VenturaProdDBSN2
+    Export: 
+      Name: VenturaProdDBSN2Output
+  
