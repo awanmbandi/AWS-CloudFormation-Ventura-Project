@@ -1,0 +1,25 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "sadasdad",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+      "CreateAllProdResources": {"Fn::Equals": [{ "Ref": "VenturaEnvironmentNamePara" }, "Prod"]}
+
+    },
+    "Resources": {
+
+    },
+    "Outputs": {
+
+    }
+}
+
+
