@@ -10,10 +10,6 @@ Parameters:
   VenturaProdWebServer1azPara:
     Description: Please select the Availability Zone to place the VenturaProdWebServer1
     Type: AWS::EC2::AvailabilityZone::Name
-
-  VenturaProdWebServer1ImageIdPara:
-    Description: Please provide Image Id for VenturaProdWebServer1
-    Type: AWS::EC2::Image::Id
   
   VenturaProdWebServer1InstanceTypePara:
     Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer1
@@ -24,18 +20,14 @@ Parameters:
       - m1.large
     Default: t2.medium
   
-  VenturaProdWebServer1KeyNamePara:
-    Description: Provide a KeName for VenturaProdWebServer1
-    Type: AWS::EC2::KeyPair::KeyName
+  # VenturaProdWebServer1KeyNamePara:
+  #   Description: Provide a KeName for VenturaProdWebServer1
+  #   Type: AWS::EC2::KeyPair::KeyName
   
   # Ventura Prod Web Server 2
   VenturaProdWebServer2azPara:
     Description: Please select the Availability Zone to place the VenturaProdWebServer2
     Type: AWS::EC2::AvailabilityZone::Name
-
-  VenturaProdWebServer2ImageIdPara:
-    Description: Please provide Image Id for VenturaProdWebServer2
-    Type: AWS::EC2::Image::Id
   
   VenturaProdWebServer2InstanceTypePara:
     Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer2
@@ -46,9 +38,9 @@ Parameters:
       - m1.large
     Default: t2.medium
   
-  VenturaProdWebServer2KeyNamePara:
-    Description: Provide a KeName for VenturaProdWebServer2
-    Type: AWS::EC2::KeyPair::KeyName
+  # VenturaProdWebServer2KeyNamePara:
+  #   Description: Provide a KeName for VenturaProdWebServer2
+  #   Type: AWS::EC2::KeyPair::KeyName
 
   #---------------------------------
   # App Servers Parameters
@@ -57,10 +49,6 @@ Parameters:
   VenturaProdAppServer1azPara:
     Description: Please select the Availability Zone to place the VenturaProdAppServer1
     Type: AWS::EC2::AvailabilityZone::Name
-
-  VenturaProdAppServer1ImageIdPara:
-    Description: Please provide Image Id for VenturaProdWebServer1
-    Type: AWS::EC2::Image::Id
   
   VenturaProdAppServer1InstanceTypePara:
     Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer1
@@ -71,18 +59,14 @@ Parameters:
       - m1.large
     Default: t2.medium
   
-  VenturaProdAppServer1KeyNamePara:
-    Description: Provide a KeName for VenturaProdAppServer1
-    Type: AWS::EC2::KeyPair::KeyName
+  # VenturaProdAppServer1KeyNamePara:
+  #   Description: Provide a KeName for VenturaProdAppServer1
+  #   Type: AWS::EC2::KeyPair::KeyName
   
   # Ventura Prod App Server 2
   VenturaProdAppServer2azPara:
     Description: Please select the Availability Zone to place the VenturaProdAppServer2
     Type: AWS::EC2::AvailabilityZone::Name
-
-  VenturaProdAppServer2ImageIdPara:
-    Description: Please provide Image Id for VenturaProdAppServer2
-    Type: AWS::EC2::Image::Id
   
   VenturaProdAppServer2InstanceTypePara:
     Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer2
@@ -93,13 +77,43 @@ Parameters:
       - "m1.large"
     Default: t2.medium
   
-  VenturaProdAppServer2KeyNamePara:
-    Description: Provide a KeName for VenturaProdAppServer2
-    Type: AWS::EC2::KeyPair::KeyName
+  # VenturaProdAppServer2KeyNamePara:
+  #   Description: Provide a KeName for VenturaProdAppServer2
+  #   Type: AWS::EC2::KeyPair::KeyName
+  
+  VenturaEnvironmentNamePara:
+    Description: Select the Environment in which you would like to Deploy the infrastructure resources
+    Type: String
+    AllowedValues:
+      - Prod
+      - DR
+      - UAT
+      - Dev
+      - Sandbox
 
-Mappings: {}
+Mappings: 
+  VenturaProdWebAppGoldenAMIMap: # Map Name
+    us-east-1: # Map Parameter
+      GoldenAMI: "ami-026b57f3c383c2eec" # Map Value
+    us-east-2: 
+      GoldenAMI: "ami-0f924dc71d44d23e2"
+    us-west-1: 
+      GoldenAMI: "ami-09208e69ff3feb1db"
+    us-west-2: 
+      GoldenAMI: "ami-08e2d37b6a0129927"
+    ca-central-1:
+      GoldenAMI: "ami-046a5648dee483245"
 
-Conditions: {}
+Conditions:
+  CreateAllProdResourcesForHA:  # Condition Configuration
+    Fn::Equals:
+    - Ref: VenturaEnvironmentNamePara
+    - Prod
+  
+  UseKeyNameBasedOnRegion: !Or [!Equals [!Ref 'AWS::Region', us-east-1], !Equals [!Ref 'AWS::Region', us-east-2]]
+
+  # CreateAllProdResourcesForHA:  # Condition Configuration
+  #   !If [CreateAllProdResourcesForHA, Ref: VenturaEnvironmentNamePara, Prod]
 
 Resources: 
   #-----------------------------------------
@@ -109,9 +123,9 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       AvailabilityZone: !Ref VenturaProdWebServer1azPara
-      ImageId: !Ref VenturaProdWebServer1ImageIdPara
+      ImageId: !FindInMap [ VenturaProdWebAppGoldenAMIMap, !Ref 'AWS::Region', GoldenAMI ] # AMI Map
       InstanceType: !Ref VenturaProdWebServer1InstanceTypePara
-      KeyName: !Ref VenturaProdWebServer1KeyNamePara
+      KeyName: !If [UseKeyNameBasedOnRegion, ventura-us-east-1-and-2-key, ventura-us-west-1-and-2-key]  # Condition reference - IF Condition
       SubnetId: !ImportValue VenturaProdWebSN1Output    # Import = 1
       SecurityGroupIds:
         - !ImportValue VenturaProdWebSecurityGroupOutput  # Import = 2
@@ -121,11 +135,12 @@ Resources:
   
   VenturaProdWebServer2:
     Type: 'AWS::EC2::Instance'
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: !Ref VenturaProdWebServer2azPara
-      ImageId: !Ref VenturaProdWebServer2ImageIdPara
+      ImageId: !FindInMap [ VenturaProdWebAppGoldenAMIMap, !Ref 'AWS::Region', GoldenAMI ] # AMI Map
       InstanceType: !Ref VenturaProdWebServer2InstanceTypePara
-      KeyName: !Ref VenturaProdWebServer2KeyNamePara
+      KeyName: !If [UseKeyNameBasedOnRegion, ventura-us-east-1-and-2-key, ventura-us-west-1-and-2-key]  # Condition reference - IF Condition
       SubnetId: !ImportValue VenturaProdWebSN2Output    # Import = 3
       SecurityGroupIds:
         - !ImportValue VenturaProdWebSecurityGroupOutput  # Import = 4
@@ -140,9 +155,9 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       AvailabilityZone: !Ref VenturaProdAppServer1azPara
-      ImageId: !Ref VenturaProdAppServer1ImageIdPara
+      ImageId: !FindInMap [ VenturaProdWebAppGoldenAMIMap, !Ref 'AWS::Region', GoldenAMI ] # AMI Map
       InstanceType: !Ref VenturaProdAppServer1InstanceTypePara
-      KeyName: !Ref VenturaProdAppServer1KeyNamePara
+      KeyName: !If [UseKeyNameBasedOnRegion, ventura-us-east-1-and-2-key, ventura-us-west-1-and-2-key]  # Condition reference - IF Condition
       SubnetId: !ImportValue VenturaProdAppSN1Output    # Import = 5
       SecurityGroupIds:
         - !ImportValue VenturaProdAppSecurityGroupOutput  # Import = 6
@@ -152,11 +167,12 @@ Resources:
   
   VenturaProdAppServer2:
     Type: 'AWS::EC2::Instance'
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: !Ref VenturaProdAppServer2azPara
-      ImageId: !Ref VenturaProdAppServer2ImageIdPara
+      ImageId: !FindInMap [ VenturaProdWebAppGoldenAMIMap, !Ref 'AWS::Region', GoldenAMI ] # AMI Map
       InstanceType: !Ref VenturaProdAppServer2InstanceTypePara
-      KeyName: !Ref VenturaProdAppServer2KeyNamePara
+      KeyName: !If [UseKeyNameBasedOnRegion, ventura-us-east-1-and-2-key, ventura-us-west-1-and-2-key]  # Condition reference - IF Condition
       SubnetId: !ImportValue VenturaProdAppSN2Output    # Import = 7
       SecurityGroupIds:
         - !ImportValue VenturaProdAppSecurityGroupOutput   # Import = 8
@@ -174,17 +190,20 @@ Outputs:
   VenturaProdWebServer2Output:
     Description: Export "VenturaProdWebServer2" VenturaProdAppServer1
     Value: !Ref VenturaProdWebServer2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdWebServer2Output
 
   VenturaProdAppServer1Output:
     Description: Export "VenturaProdAppServer1"
     Value: !Ref VenturaProdAppServer1
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdAppServer1Output
   
   VenturaProdAppServer2Output:
     Description: Export "VenturaProdAppServer2"
     Value: !Ref VenturaProdAppServer2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdAppServer2Output

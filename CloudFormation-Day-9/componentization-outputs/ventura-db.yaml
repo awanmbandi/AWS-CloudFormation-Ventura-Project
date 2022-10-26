@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions the ventura db infrastructure
+Metadata: {}
+
+Parameters: 
+  #---------------------------------
+  # RDS DB Instance Parameters
+  #---------------------------------
+  VenturaProdDBInstanceAllocatedStoragePara:
+    Description: Provide the DB Instance Allocated Storage size
+    Type: String
+
+  VenturaProdDBInstanceDBInstanceClassPara:
+    Description: Provide the DB Instance Class/Type for DBInstanceClass
+    Type: String
+    Default: db.t3.micro
+  
+  VenturaProdDBInstanceEnginePara:
+    Description: Provide the DB instance Engine Type
+    Type: String 
+    Default: MySQL
+  
+  VenturaProdDBInstanceMasterUsernamePara:
+    Description: Provide the DB Instance Master/Admin Username (example admin or root)
+    Type: String
+    Default: admin
+  
+  VenturaProdDBInstanceMasterUserPasswordPara:
+    Description: Provide the DB Instance Master/Admin Password. Password can't contain any of the following / (slash), '(single quote), "(double quote) and @ (at sign)
+    Type: String
+  
+  VenturaProdDBInstanceMultiAZPara:
+    Description: Provide the DB Placement Multi AZ or Single Instamce (true/false)
+    Type: String
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  #-----------------------------------------
+  # Ventura Prod Database Instance
+  #-----------------------------------------
+  VenturaProdDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Ventura Database Subnet Group
+      SubnetIds:
+        - !ImportValue VenturaProdDBSN1Output   # Import = 1
+        - !ImportValue VenturaProdDBSN2Output   # Import = 2
+      Tags:
+        - Key: Name
+          Value: VenturaProdDBSubnetGroup
+  
+  VenturaProdDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: venturaproddb
+      AllocatedStorage: !Ref VenturaProdDBInstanceAllocatedStoragePara
+      DBInstanceClass: !Ref VenturaProdDBInstanceDBInstanceClassPara
+      Engine: !Ref VenturaProdDBInstanceEnginePara
+      MasterUsername: !Ref VenturaProdDBInstanceMasterUsernamePara
+      MasterUserPassword: !Ref VenturaProdDBInstanceMasterUserPasswordPara
+      MultiAZ: !Ref VenturaProdDBInstanceMultiAZPara
+      DBSubnetGroupName: !Ref VenturaProdDBSubnetGroup
+      VPCSecurityGroups: 
+        - !ImportValue VenturaProdDBSecurityGroupOutput   # Import = 3
+      Tags:
+      - Key: Name
+        Value: venturaproddb
+    DeletionPolicy: Snapshot
+
+Outputs: {}

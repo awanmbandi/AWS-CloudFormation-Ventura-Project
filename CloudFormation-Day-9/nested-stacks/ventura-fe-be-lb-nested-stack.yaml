@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provisions the ventura prod frontend and backend LoadBalancers
+Metadata: {}
+
+Parameters: 
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  #-----------------------------------------
+  # Ventura Prod ELB:ALB(FrontEnd/BackEnd), LB Listeners and Target Group
+  #-----------------------------------------
+  # Application/Internet-Facing/FrontEnd Loadbalancer
+  VenturaProdFrontEndWebLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: FrontEndLB
+      Subnets:
+        - !ImportValue VenturaProdNATalbSN1Output  # Import = 1
+        - !ImportValue VenturaProdNATalbSN2Output  # Import = 2
+      SecurityGroups:
+        - !ImportValue VenturaProdFrontEndLBSecurityGroupOutput   # Import = 3
+      Tags:
+        - Key: Name
+          Value: VenturaProdFrontEndWebLB
+
+  VenturaProdFrontEndLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref VenturaProdFrontEndWebLB
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref VenturaProdFrontEndWebLBtg
+
+  VenturaProdFrontEndWebLBtg: 
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: VenturaProdFrontEndWebLBtg
+      VpcId: !ImportValue VenturaProdVPCOutput    # Import = 4
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      Targets: 
+       - Id: !ImportValue VenturaProdWebServer1Output   # Import = 5
+         Port: 80
+       - Id: !ImportValue VenturaProdWebServer2Output   # Import = 6
+         Port: 80
+
+  # Application/Internal/BackEnd Loadbalancer
+  VenturaProdBackEndAppLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: BackEndLB
+      Scheme: internal
+      Subnets:
+        - !ImportValue VenturaProdAppSN1Output    # Import = 7
+        - !ImportValue VenturaProdAppSN2Output    # Import = 8
+      SecurityGroups:
+        - !ImportValue VenturaProdBackEndLBSecurityGroupOutput    # Import = 9
+      Tags:
+        - Key: Name
+          Value: VenturaProdBackEndAppLB
+
+  VenturaProdBackEndAppLBtg: 
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: VenturaProdBackEndAppLBtg
+      VpcId: !ImportValue VenturaProdVPCOutput
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      Targets: 
+       - Id: !ImportValue VenturaProdAppServer1Output  # Import = 10
+         Port: 80
+       - Id: !ImportValue VenturaProdAppServer2Output  # Import = 11
+         Port: 80
+  
+  VenturaProdBackEndAppLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref VenturaProdBackEndAppLB
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref VenturaProdBackEndAppLBtg
+
+Outputs: {}
