@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Root Stack Template
+
+Parameters: 
+  VenturaProdVPCciderBlockPara:
+    Description: Please provide a CIDR block for the VenturaProVPC
+    Type: String 
+    Default: "10.0.0.0/16"
+  #---------------------------------------
+  # Subnet CidirBlock Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN1
+    Type: String
+    Default: "10.0.1.0/24"
+  
+  VenturaProdNATalbSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN2
+    Type: String
+    Default: "10.0.2.0/24"
+  
+  VenturaProdWebSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN1
+    Type: String
+    Default: "10.0.3.0/24"
+  
+  VenturaProdWebSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN2
+    Type: String
+    Default: "10.0.4.0/24"
+  
+  VenturaProdAppSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN1
+    Type: String
+    Default: "10.0.5.0/24"
+  
+  VenturaProdAppSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN2
+    Type: String
+    Default: "10.0.6.0/24"
+  
+  VenturaProdDBSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN1
+    Type: String
+    Default: "10.0.7.0/24"
+  
+  VenturaProdDBSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN2
+    Type: String
+    Default: "10.0.8.0/24"
+  
+  # Ventura Environment Type Parameter
+  VenturaEnvironmentNamePara:
+    Description: Select the Environment in which you would like to Deploy the infrastructure resources
+    Type: String
+    AllowedValues:
+      - Prod
+      - DR
+      - UAT
+      - Dev
+      - Sandbox
+    Default: Dev
+
+Resources:
+  VenturaNetworkInfrastructure:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/StackSets/ventura-network-infra-nested-stack.yaml 
+      Parameters:  
+        #---------------------------------------
+        # Subnet CidirBlock Parameters
+        #---------------------------------------
+        VenturaProdNATalbSN1CidrBlockPara: !Ref VenturaProdNATalbSN1CidrBlockPara
+        VenturaProdNATalbSN2CidrBlockPara: !Ref VenturaProdNATalbSN2CidrBlockPara
+        VenturaProdWebSN1CidrBlockPara: !Ref VenturaProdWebSN1CidrBlockPara
+        VenturaProdWebSN2CidrBlockPara: !Ref VenturaProdWebSN2CidrBlockPara
+        VenturaProdAppSN1CidrBlockPara: !Ref VenturaProdAppSN1CidrBlockPara
+        VenturaProdAppSN2CidrBlockPara: !Ref VenturaProdAppSN2CidrBlockPara
+        VenturaProdDBSN1CidrBlockPara: !Ref VenturaProdDBSN1CidrBlockPara
+        VenturaProdDBSN2CidrBlockPara: !Ref VenturaProdDBSN2CidrBlockPara
+        #---------------------------------------
+        # Ventura Environment Type/Name Parameter
+        #---------------------------------------
+        VenturaEnvironmentNamePara: !Ref VenturaEnvironmentNamePara
+      TimeoutInMinutes: 20      
+
+Outputs: {}
+
+
+
