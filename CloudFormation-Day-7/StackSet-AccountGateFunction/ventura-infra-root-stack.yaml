@@ -1,0 +1,306 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Root Stack Template
+
+Parameters: 
+  VenturaProdVPCciderBlockPara:
+    Description: Please provide a CIDR block for the VenturaProVPC
+    Type: String 
+    Default: "10.0.0.0/16"
+  #---------------------------------------
+  # Subnet Availability Zone Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdNATalbSN2azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+
+  VenturaProdWebSN1azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdWebSN2azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+  
+  VenturaProdAppSN1azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdAppSN2azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+  
+  VenturaProdDBSN1azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdDBSN21azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+  
+  #---------------------------------------
+  # Subnet CidirBlock Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN1
+    Type: String
+    Default: "10.0.1.0/24"
+  
+  VenturaProdNATalbSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdNATalbSN2
+    Type: String
+    Default: "10.0.2.0/24"
+  
+  VenturaProdWebSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN1
+    Type: String
+    Default: "10.0.3.0/24"
+  
+  VenturaProdWebSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdWebSN2
+    Type: String
+    Default: "10.0.4.0/24"
+  
+  VenturaProdAppSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN1
+    Type: String
+    Default: "10.0.5.0/24"
+  
+  VenturaProdAppSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdAppSN2
+    Type: String
+    Default: "10.0.6.0/24"
+  
+  VenturaProdDBSN1CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN1
+    Type: String
+    Default: "10.0.7.0/24"
+  
+  VenturaProdDBSN2CidrBlockPara:
+    Description: Please provide the CidirBlock for VenturaProdDBSN2
+    Type: String
+    Default: "10.0.8.0/24"
+  
+  # Ventura Environment Type Parameter
+  VenturaEnvironmentNamePara:
+    Description: Select the Environment in which you would like to Deploy the infrastructure resources
+    Type: String
+    AllowedValues:
+      - Prod
+      - DR
+      - UAT
+      - Dev
+      - Sandbox
+    Default: Prod
+  
+  # ---------------------------------------
+  # Web Servers Parameters
+  # ---------------------------------------
+  # Ventura Prod Web Server 1
+  VenturaProdWebServer1azPara:
+    Description: Please select the Availability Zone to place the VenturaProdWebServer1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdWebServer1InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer1
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+  
+  # Ventura Prod Web Server 2
+  VenturaProdWebServer2azPara:
+    Description: Please select the Availability Zone to place the VenturaProdWebServer2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+  
+  VenturaProdWebServer2InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdWebServer2
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+
+  #---------------------------------
+  # App Servers Parameters
+  #---------------------------------
+  # Ventura Prod App Server 1
+  VenturaProdAppServer1azPara:
+    Description: Please select the Availability Zone to place the VenturaProdAppServer1
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1a"
+  
+  VenturaProdAppServer1InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer1
+    Type: String
+    AllowedValues:
+      - t2.micro
+      - t2.medium
+      - m1.large
+    Default: t2.medium
+  
+  # Ventura Prod App Server 2
+  VenturaProdAppServer2azPara:
+    Description: Please select the Availability Zone to place the VenturaProdAppServer2
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: "us-east-1b"
+  
+  VenturaProdAppServer2InstanceTypePara:
+    Description: Enter t2.micro, t2.medium, or m1.large for VenturaProdAppServer2
+    Type: String
+    AllowedValues:
+      - "t2.micro"
+      - "t2.medium"
+      - "m1.large"
+    Default: t2.medium
+
+  # ---------------------------------
+  # RDS DB Instance Parameters
+  # ---------------------------------
+  VenturaProdDBInstanceAllocatedStoragePara:
+    Description: Provide the DB Instance Allocated Storage size
+    Type: String
+    Default: "20"
+
+  VenturaProdDBInstanceDBInstanceClassPara:
+    Description: Provide the DB Instance Class/Type for DBInstanceClass
+    Type: String
+    Default: db.t3.micro
+  
+  VenturaProdDBInstanceEnginePara:
+    Description: Provide the DB instance Engine Type
+    Type: String 
+    Default: MySQL
+  
+  VenturaProdDBInstanceMasterUsernamePara:
+    Description: Provide the DB Instance Master/Admin Username (example admin or root)
+    Type: String
+    Default: admin
+  
+  VenturaProdDBInstanceMasterUserPasswordPara:
+    Description: Provide the DB Instance Master/Admin Password. Password can't contain any of the following / (slash), '(single quote), "(double quote) and @ (at sign)
+    Type: String
+    Default: "jjtechincmb"
+  
+  VenturaProdDBInstanceMultiAZPara:
+    Description: Provide the DB Placement Multi AZ or Single Instamce (true/false)
+    Type: String
+    Default: "false"
+
+Resources:
+  VenturaNetworkInfrastructure:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/ventura/ventura-network-infra-nested-stack.yaml 
+      Parameters:  
+        #---------------------------------------
+        # Subnet Availability Zone Parameters
+        #---------------------------------------
+        VenturaProdVPCciderBlockPara: !Ref VenturaProdVPCciderBlockPara
+        VenturaProdNATalbSN1azPara: !Ref VenturaProdNATalbSN1azPara
+        VenturaProdNATalbSN2azPara: !Ref VenturaProdNATalbSN2azPara
+        VenturaProdWebSN1azPara: !Ref VenturaProdWebSN1azPara
+        VenturaProdWebSN2azPara: !Ref VenturaProdWebSN2azPara
+        VenturaProdAppSN1azPara: !Ref VenturaProdAppSN1azPara
+        VenturaProdAppSN2azPara: !Ref VenturaProdAppSN2azPara
+        VenturaProdDBSN1azPara: !Ref VenturaProdDBSN1azPara
+        VenturaProdDBSN21azPara: !Ref VenturaProdDBSN21azPara
+        #---------------------------------------
+        # Subnet CidirBlock Parameters
+        #---------------------------------------
+        VenturaProdNATalbSN1CidrBlockPara: !Ref VenturaProdNATalbSN1CidrBlockPara
+        VenturaProdNATalbSN2CidrBlockPara: !Ref VenturaProdNATalbSN2CidrBlockPara
+        VenturaProdWebSN1CidrBlockPara: !Ref VenturaProdWebSN1CidrBlockPara
+        VenturaProdWebSN2CidrBlockPara: !Ref VenturaProdWebSN2CidrBlockPara
+        VenturaProdAppSN1CidrBlockPara: !Ref VenturaProdAppSN1CidrBlockPara
+        VenturaProdAppSN2CidrBlockPara: !Ref VenturaProdAppSN2CidrBlockPara
+        VenturaProdDBSN1CidrBlockPara: !Ref VenturaProdDBSN1CidrBlockPara
+        VenturaProdDBSN2CidrBlockPara: !Ref VenturaProdDBSN2CidrBlockPara
+        #---------------------------------------
+        # Ventura Environment Type/Name Parameter
+        #---------------------------------------
+        VenturaEnvironmentNamePara: !Ref VenturaEnvironmentNamePara
+
+      TimeoutInMinutes: 20      
+
+  # Ventura (Web, App, DB, FrontEnd and BackEnd) Security Group Resources
+  VenturaSecurityGroupNestedStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: VenturaNetworkInfrastructure      # Pass a DependsOn when Orchestrating all Templates at once
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/ventura/ventura-web-app-db-sg-nested-stack.yaml 
+      Parameters: {}
+      TimeoutInMinutes: 20
+  
+  VenturaWebandAppServersNestedStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: [VenturaNetworkInfrastructure, VenturaSecurityGroupNestedStack]
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/ventura/ventura-web-app-servers-infra-nested-stack.yaml 
+      Parameters: 
+        #---------------------------------
+        # Web Servers Parameters
+        #---------------------------------
+        VenturaProdWebServer1azPara: !Ref VenturaProdWebServer1azPara
+        VenturaProdWebServer1InstanceTypePara: !Ref VenturaProdWebServer1InstanceTypePara 
+        VenturaProdWebServer2azPara: !Ref VenturaProdWebServer2azPara
+        VenturaProdWebServer2InstanceTypePara: !Ref VenturaProdWebServer2InstanceTypePara
+        #---------------------------------
+        # App Servers Parameters
+        #---------------------------------
+        VenturaProdAppServer1azPara: !Ref VenturaProdAppServer1azPara
+        VenturaProdAppServer1InstanceTypePara: !Ref VenturaProdAppServer1InstanceTypePara
+        VenturaProdAppServer2azPara: !Ref VenturaProdAppServer2azPara
+        VenturaProdAppServer2InstanceTypePara: !Ref VenturaProdAppServer2InstanceTypePara
+        #---------------------------------
+        # Ventura Deployment Environments
+        #--------------------------------- 
+        VenturaEnvironmentNamePara: !Ref VenturaEnvironmentNamePara
+
+      TimeoutInMinutes: 20
+  
+  VenturaDBNestedStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: [VenturaNetworkInfrastructure, VenturaSecurityGroupNestedStack]      # Pass a DependsOn when Orchestrating all Templates at once
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/ventura/ventura-db-nested-stack.yaml 
+      Parameters: 
+        #---------------------------------
+        # RDS DB Instance Parameters
+        #---------------------------------
+        VenturaProdDBInstanceAllocatedStoragePara: !Ref VenturaProdDBInstanceAllocatedStoragePara
+        VenturaProdDBInstanceDBInstanceClassPara: !Ref VenturaProdDBInstanceDBInstanceClassPara
+        VenturaProdDBInstanceEnginePara: !Ref VenturaProdDBInstanceEnginePara
+        VenturaProdDBInstanceMasterUsernamePara: !Ref VenturaProdDBInstanceMasterUsernamePara
+        VenturaProdDBInstanceMasterUserPasswordPara: !Ref VenturaProdDBInstanceMasterUserPasswordPara
+        VenturaProdDBInstanceMultiAZPara: !Ref VenturaProdDBInstanceMultiAZPara
+      TimeoutInMinutes: 20
+  
+  VenturaFrontEndandBackEndLBNestedStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: [VenturaNetworkInfrastructure, VenturaSecurityGroupNestedStack, VenturaWebandAppServersNestedStack]      # Pass a DependsOn when Orchestrating all Templates at once
+    Properties:
+      TemplateURL: https://eagles-batch-cloudformation-nested-stack.s3.amazonaws.com/ventura/ventura-fe-be-lb-nested-stack.yaml 
+      Parameters: {}
+      TimeoutInMinutes: 5
+
+Outputs: {}
+
+
+
