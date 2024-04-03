@@ -75,10 +75,24 @@ Parameters:
   VenturaProdDBSN2CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdDBSN2
     Type: String
+  
+  VenturaEnvironmentNamePara:
+    Description: Select the Environment in which you would like to Deploy the infrastructure resources
+    Type: String
+    AllowedValues:
+      - Prod
+      - DR
+      - UAT
+      - Dev
+      - Sandbox
 
 Mappings: {}
 
-Conditions: {}
+Conditions: 
+  CreateAllProdResourcesForHA:  # Condition Configuration
+    Fn::Equals:
+    - Ref: VenturaEnvironmentNamePara
+    - Prod
 
 Resources: 
   #-----------------------------------------
@@ -108,6 +122,7 @@ Resources:
 
   VenturaProdNATalbSN2:
     Type: AWS::EC2::Subnet
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: !Ref VenturaProdNATalbSN2azPara
       VpcId: !Ref VenturaProdVPC
@@ -132,6 +147,7 @@ Resources:
 
   VenturaProdWebSN2:
     Type: AWS::EC2::Subnet
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: "us-east-1b"
       VpcId: !Ref VenturaProdVPC
@@ -155,6 +171,7 @@ Resources:
 
   VenturaProdAppSN2:
     Type: AWS::EC2::Subnet
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: !Ref VenturaProdAppSN2azPara
       VpcId: !Ref VenturaProdVPC
@@ -178,6 +195,7 @@ Resources:
 
   VenturaProdDBSN2:
     Type: AWS::EC2::Subnet
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AvailabilityZone: !Ref VenturaProdDBSN21azPara
       VpcId: !Ref VenturaProdVPC
@@ -211,6 +229,7 @@ Resources:
   
   VenturaProdPublicRouteTable2:
     Type: AWS::EC2::RouteTable
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -243,6 +262,7 @@ Resources:
 
   VenturaProdAppRouteTable2:
     Type: AWS::EC2::RouteTable
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -259,6 +279,7 @@ Resources:
 
   VenturaProdDBRouteTable2:
     Type: AWS::EC2::RouteTable
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -277,6 +298,7 @@ Resources:
 
   VenturaProdPublicRouteTable2Assoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdNATalbSN2
       RouteTableId: !Ref VenturaProdPublicRouteTable2
@@ -289,6 +311,7 @@ Resources:
 
   VenturaProdWebSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdWebSN2
       RouteTableId: !Ref VenturaProdWebRouteTable2
@@ -301,6 +324,7 @@ Resources:
 
   VenturaProdAppSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdAppSN2
       RouteTableId: !Ref VenturaProdAppRouteTable2
@@ -313,6 +337,7 @@ Resources:
 
   VenturaProdDBSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdDBSN2
       RouteTableId: !Ref VenturaProdDBRouteTable2
@@ -330,6 +355,7 @@ Resources:
   VenturaProdNatGateway2:
     Type: AWS::EC2::NatGateway
     DependsOn: VenturaProdNatGateway2EIP
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AllocationId: !GetAtt VenturaProdNatGateway2EIP.AllocationId
       SubnetId: !Ref VenturaProdNATalbSN2
@@ -346,6 +372,7 @@ Resources:
   VenturaProdNatGateway2EIP:
     Type: AWS::EC2::EIP
     DependsOn: VenturaProdNATalbSN2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       Domain: vpc
   
@@ -361,6 +388,7 @@ Resources:
   
   VenturaProdPublicRouteTable2PublicRoute:
       Type: AWS::EC2::Route
+      Condition: CreateAllProdResourcesForHA  # Condition reference
       Properties:
         RouteTableId: !Ref VenturaProdPublicRouteTable2
         DestinationCidrBlock: 0.0.0.0/0
@@ -377,6 +405,7 @@ Resources:
   VenturaProdWebRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdWebRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -393,6 +422,7 @@ Resources:
   VenturaProdAppRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdAppRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -409,6 +439,7 @@ Resources:
   VenturaProdDBRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdDBRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -430,6 +461,7 @@ Outputs:
   VenturaProdNATalbSN2Output:
     Description: Exporting The "VenturaProdNATalbSN2" ID
     Value: !Ref VenturaProdNATalbSN2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdNATalbSN2Output
   
@@ -442,6 +474,7 @@ Outputs:
   VenturaProdWebSN2Output:
     Description: Exporting the "!Ref VenturaProdWebSN2" ID
     Value: !Ref VenturaProdWebSN2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdWebSN2Output
   
@@ -454,6 +487,7 @@ Outputs:
   VenturaProdAppSN2Output:
     Description: Exporting the "!Ref VenturaProdAppSN2" ID
     Value: !Ref VenturaProdAppSN2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdAppSN2Output
 
@@ -466,6 +500,6 @@ Outputs:
   VenturaProdDBSN2Output:
     Description: Exporting the "!Ref VenturaProdDBSN2" ID
     Value: !Ref VenturaProdDBSN2
+    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdDBSN2Output
-  

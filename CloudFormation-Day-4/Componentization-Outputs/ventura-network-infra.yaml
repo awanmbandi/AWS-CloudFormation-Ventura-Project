@@ -6,68 +6,79 @@ Parameters:
   VenturaProdVPCciderBlockPara:
     Description: Please provide a CIDR block for the VenturaProVPC
     Type: String
-    Default: "10.0.0.0/16"
+  #---------------------------------------
+  # Subnet Availability Zone Parameters
+  #---------------------------------------
+  VenturaProdNATalbSN1azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdNATalbSN2azPara:
+    Description: Please provide the availability zone for VenturaProdNATalbSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+
+  VenturaProdWebSN1azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdWebSN2azPara:
+    Description: Please provide the availability zone for VenturaProdWebSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdAppSN1azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdAppSN2azPara:
+    Description: Please provide the availability zone for VenturaProdAppSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdDBSN1azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN1
+    Type: AWS::EC2::AvailabilityZone::Name
+  
+  VenturaProdDBSN21azPara:
+    Description: Please provide the availability zone for VenturaProdDBSN2
+    Type: AWS::EC2::AvailabilityZone::Name
+  
   #---------------------------------------
   # Subnet CidirBlock Parameters
   #---------------------------------------
   VenturaProdNATalbSN1CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdNATalbSN1
     Type: String
-    Default: "10.0.1.0/24"
   
   VenturaProdNATalbSN2CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdNATalbSN2
     Type: String
-    Default: "10.0.2.0/24"
   
   VenturaProdWebSN1CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdWebSN1
     Type: String
-    Default: "10.0.3.0/24"
   
   VenturaProdWebSN2CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdWebSN2
     Type: String
-    Default: "10.0.4.0/24"
   
   VenturaProdAppSN1CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdAppSN1
     Type: String
-    Default: "10.0.5.0/24"
   
   VenturaProdAppSN2CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdAppSN2
     Type: String
-    Default: "10.0.6.0/24"
   
   VenturaProdDBSN1CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdDBSN1
     Type: String
-    Default: "10.0.7.0/24"
   
   VenturaProdDBSN2CidrBlockPara:
     Description: Please provide the CidirBlock for VenturaProdDBSN2
     Type: String
-    Default: "10.0.8.0/24"
-  
-  VenturaEnvironmentNamePara:
-    Description: Select the Environment in which you would like to Deploy the infrastructure resources
-    Type: String
-    AllowedValues:
-      - Prod
-      - DR
-      - UAT
-      - Dev
-      - Sandbox
-    Default: Dev     # You're Setting Up The Developers Development Environment
 
 Mappings: {}
 
-Conditions: 
-  CreateAllProdResourcesForHA:  # Condition Configuration
-    Fn::Equals:
-    - Ref: VenturaEnvironmentNamePara
-    - Prod
+Conditions: {}
 
 Resources: 
   #-----------------------------------------
@@ -88,10 +99,7 @@ Resources:
   VenturaProdNATalbSN1:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 0
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdNATalbSN1azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdNATalbSN1CidrBlockPara
       Tags:
@@ -100,12 +108,8 @@ Resources:
 
   VenturaProdNATalbSN2:
     Type: AWS::EC2::Subnet
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 1
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdNATalbSN2azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdNATalbSN2CidrBlockPara
       MapPublicIpOnLaunch: true
@@ -119,10 +123,7 @@ Resources:
   VenturaProdWebSN1:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 0
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdWebSN1azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdWebSN1CidrBlockPara
       Tags:
@@ -131,12 +132,8 @@ Resources:
 
   VenturaProdWebSN2:
     Type: AWS::EC2::Subnet
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 1
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: "us-east-1b"
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdWebSN2CidrBlockPara
       Tags:
@@ -149,10 +146,7 @@ Resources:
   VenturaProdAppSN1:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 0
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdAppSN1azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdAppSN1CidrBlockPara
       Tags:
@@ -161,12 +155,8 @@ Resources:
 
   VenturaProdAppSN2:
     Type: AWS::EC2::Subnet
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 1
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdAppSN2azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdAppSN2CidrBlockPara
       Tags:
@@ -179,10 +169,7 @@ Resources:
   VenturaProdDBSN1:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 0
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdDBSN1azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdDBSN1CidrBlockPara
       Tags:
@@ -191,12 +178,8 @@ Resources:
 
   VenturaProdDBSN2:
     Type: AWS::EC2::Subnet
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
-      AvailabilityZone: 
-        Fn::Select:
-          - 1
-          - 'Fn::GetAZs': ''
+      AvailabilityZone: !Ref VenturaProdDBSN21azPara
       VpcId: !Ref VenturaProdVPC
       CidrBlock: !Ref VenturaProdDBSN2CidrBlockPara
       Tags:
@@ -228,7 +211,6 @@ Resources:
   
   VenturaProdPublicRouteTable2:
     Type: AWS::EC2::RouteTable
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -261,7 +243,6 @@ Resources:
 
   VenturaProdAppRouteTable2:
     Type: AWS::EC2::RouteTable
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -278,7 +259,6 @@ Resources:
 
   VenturaProdDBRouteTable2:
     Type: AWS::EC2::RouteTable
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       VpcId: !Ref VenturaProdVPC
       Tags:
@@ -297,7 +277,6 @@ Resources:
 
   VenturaProdPublicRouteTable2Assoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdNATalbSN2
       RouteTableId: !Ref VenturaProdPublicRouteTable2
@@ -310,7 +289,6 @@ Resources:
 
   VenturaProdWebSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdWebSN2
       RouteTableId: !Ref VenturaProdWebRouteTable2
@@ -323,7 +301,6 @@ Resources:
 
   VenturaProdAppSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdAppSN2
       RouteTableId: !Ref VenturaProdAppRouteTable2
@@ -336,7 +313,6 @@ Resources:
 
   VenturaProdDBSN2RouteTableAssoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       SubnetId: !Ref VenturaProdDBSN2
       RouteTableId: !Ref VenturaProdDBRouteTable2
@@ -354,7 +330,6 @@ Resources:
   VenturaProdNatGateway2:
     Type: AWS::EC2::NatGateway
     DependsOn: VenturaProdNatGateway2EIP
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       AllocationId: !GetAtt VenturaProdNatGateway2EIP.AllocationId
       SubnetId: !Ref VenturaProdNATalbSN2
@@ -371,7 +346,6 @@ Resources:
   VenturaProdNatGateway2EIP:
     Type: AWS::EC2::EIP
     DependsOn: VenturaProdNATalbSN2
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       Domain: vpc
   
@@ -387,7 +361,6 @@ Resources:
   
   VenturaProdPublicRouteTable2PublicRoute:
       Type: AWS::EC2::Route
-      Condition: CreateAllProdResourcesForHA  # Condition reference
       Properties:
         RouteTableId: !Ref VenturaProdPublicRouteTable2
         DestinationCidrBlock: 0.0.0.0/0
@@ -404,7 +377,6 @@ Resources:
   VenturaProdWebRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdWebRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -421,7 +393,6 @@ Resources:
   VenturaProdAppRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdAppRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -438,7 +409,6 @@ Resources:
   VenturaProdDBRouteTable2NATgatewayRoute:
     Type: AWS::EC2::Route
     DependsOn: VenturaProdNatGateway2EIP
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Properties:
       RouteTableId: !Ref VenturaProdDBRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
@@ -460,7 +430,6 @@ Outputs:
   VenturaProdNATalbSN2Output:
     Description: Exporting The "VenturaProdNATalbSN2" ID
     Value: !Ref VenturaProdNATalbSN2
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdNATalbSN2Output
   
@@ -473,7 +442,6 @@ Outputs:
   VenturaProdWebSN2Output:
     Description: Exporting the "!Ref VenturaProdWebSN2" ID
     Value: !Ref VenturaProdWebSN2
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdWebSN2Output
   
@@ -486,7 +454,6 @@ Outputs:
   VenturaProdAppSN2Output:
     Description: Exporting the "!Ref VenturaProdAppSN2" ID
     Value: !Ref VenturaProdAppSN2
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdAppSN2Output
 
@@ -499,6 +466,6 @@ Outputs:
   VenturaProdDBSN2Output:
     Description: Exporting the "!Ref VenturaProdDBSN2" ID
     Value: !Ref VenturaProdDBSN2
-    Condition: CreateAllProdResourcesForHA  # Condition reference
     Export: 
       Name: VenturaProdDBSN2Output
+  

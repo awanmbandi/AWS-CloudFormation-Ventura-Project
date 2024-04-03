@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: This template provisions the ventura prod web and app security group
 Metadata: {}
 
-Parameters: {}
+Parameters: 
 
 Mappings: {}
 
